@@ -102,9 +102,10 @@ def test_custom():
     # model = torch.hub.load(r"C:\work\python\yolov5", "custom", path=r"C:\work\python\yolov5\demo1\runs\train\exp2\weights\best.pt", source="local")  # local repo
     # 测试成功（通过本地直接运行文件直接训练的best.pt）
     # model = torch.hub.load("ultralytics/yolov5", "custom", path=r"C:\work\python\yolov5\demo1\runs\train\exp2\weights\best.pt")  # local repo
-    # 测试成功（通过本地命令训练的best.pt： python demo/demo_guanfang/train.py --img 640 --epochs 100 --data coco128.yaml --weights yolov5s.pt）
+    # 测试成功（通过本地命令训练的best.pt： demo_guanfang/train.py --img 640 --epochs 100 --data coco128.yaml --weights yolov5s.pt）
     # model = torch.hub.load("ultralytics/yolov5", "custom", path=r"runs/train/exp2/weights/best.pt")  # local repo
-    model = torch.hub.load("ultralytics/yolov5", "custom", path=r"runs/train/exp3/weights/best.pt")  # local repo
+    # 测试成功（通过本地命令训练的best.pt： demo_guanfang/train.py --img 640 --epochs 100 --data coco128.yaml）
+    model = torch.hub.load("ultralytics/yolov5", "custom", path=r"runs/train/exp5/weights/best.pt")  # local repo
     # model = YOLO("runs/train/exp/weights/best.pt")  # local repo
     im = "images/test/txsp.png"
     results = model(im)
