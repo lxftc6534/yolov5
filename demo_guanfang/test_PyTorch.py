@@ -6,6 +6,7 @@ import torch
 from PIL import Image, ImageGrab
 import threading
 from ultralytics import YOLO
+import numpy as np
 
 def demo1():
     # Model
@@ -81,6 +82,19 @@ def test_to_json_by_results(results):
     # results.pandas().xyxy[0].to_json(orient="records")  # JSON img1 predictions
     print(results.pandas().xyxy[0].to_json(orient="records"))
 
+
+def test_ImageGrab_imshow():
+    while True:
+        im = ImageGrab.grab()
+        imm = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
+        imm = imm[0:500, 0:500]
+        imm = cv2.resize(imm, None, fx=0.5, fy=0.5)
+        cv2.imshow("capture", imm)
+        if cv2.waitKey(1) & 0xFF == ord('q'):  # q键推出
+            break
+    cv2.destroyAllWindows()
+
+
 def test_ImageGrab():
     # Model
     model = torch.hub.load("ultralytics/yolov5", "yolov5s")
@@ -90,6 +104,7 @@ def test_ImageGrab():
 
     # Inference
     results = model(im)
+    results.pandas().xyxy[0]  # Pandas DataFrame
     # Results
     results.print()
     results.save()  # or .show()
@@ -102,15 +117,26 @@ def test_custom():
     # model = torch.hub.load(r"C:\work\python\yolov5", "custom", path=r"C:\work\python\yolov5\demo1\runs\train\exp2\weights\best.pt", source="local")  # local repo
     # 测试成功（通过本地直接运行文件直接训练的best.pt）
     # model = torch.hub.load("ultralytics/yolov5", "custom", path=r"C:\work\python\yolov5\demo1\runs\train\exp2\weights\best.pt")  # local repo
-    # 测试成功（通过本地命令训练的best.pt： demo_guanfang/train.py --img 640 --epochs 100 --data coco128.yaml --weights yolov5s.pt）
+    # 测试成功（通过本地命令训练的best.pt： python demo_guanfang/train.py --img 640 --epochs 100 --data coco128.yaml --weights yolov5s.pt）
     # model = torch.hub.load("ultralytics/yolov5", "custom", path=r"runs/train/exp2/weights/best.pt")  # local repo
-    # 测试成功（通过本地命令训练的best.pt： demo_guanfang/train.py --img 640 --epochs 100 --data coco128.yaml）
-    model = torch.hub.load("ultralytics/yolov5", "custom", path=r"runs/train/exp5/weights/best.pt")  # local repo
+    # 测试成功（通过本地命令训练的best.pt： python demo_guanfang/train.py --img 640 --epochs 100 --data coco128.yaml）
+    # model = torch.hub.load("ultralytics/yolov5", "custom", path=r"runs/train/exp5/weights/best.pt")  # local repo
+    # 测试成功（通过本地命令训练的best.pt： 直接运行demo_guanfang/train.py）
+    # model = torch.hub.load("ultralytics/yolov5", "custom", path=r"runs/train/exp10/weights/best.pt")  # local repo
+    # 测试成功（通过本地命令训练的best.pt： cd到目录 demo_guanfang 在运行： python train.py --img 640 --epochs 100 --data .\coco128_test.yaml）
+    # model = torch.hub.load("ultralytics/yolov5", "custom", path=r"runs/train/exp11/weights/best.pt")  # local repo
+    # 测试成功（通过本地命令训练的best.pt： cd到目录 demo_guanfang 在运行： python train.py --img 640 --epochs 100 --data .\coco128_test_custom.yaml）
+    model = torch.hub.load("ultralytics/yolov5", "custom", path=r"runs/train/exp13/weights/best.pt")  # local repo
     # model = YOLO("runs/train/exp/weights/best.pt")  # local repo
     im = "images/test/txsp.png"
-    results = model(im)
+    im2 = "images/test/Apple2.jpeg"
+    # results = model(im)
+    results = model([im, im2])  # batch of images
     results.pandas().xyxy[0]  # Pandas DataFrame
+    results.print()
     results.save()
+    return results
+
 
 def run(model, im):
     """Performs inference on an image using a given model and saves the output; model must support `.save()` method."""
@@ -130,4 +156,6 @@ def test_Thread():
 
 if __name__ == "__main__":
     # test_to_json_by_results(demo1())
-    test_custom()
+    # test_custom()
+    # test_crop_by_results(test_custom())
+    test_ImageGrab_imshow()

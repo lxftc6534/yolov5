@@ -18,13 +18,22 @@ def convert(img_size, box):
     return (x, y, w, h)
 
 
-def decode_json(json_floder_path, json_name):
-    txt_name = '../demo1/labels/train/' + json_name[0:-5] + '.txt'
+def decode_json(floder_path_json, json_name, floder_path_txt):
+    print(f'json_name:{json_name}')
+    if not json_name.endswith('.json'):
+        return
+    txt_name = floder_path_txt + json_name[0:-5] + '.txt'
     #存放txt的绝对路径
     txt_file = open(txt_name, 'w')
 
-    json_path = os.path.join(json_floder_path, json_name)
-    data = json.load(open(json_path, 'r', encoding='gb2312',errors='ignore'))
+    json_path = os.path.join(floder_path_json, json_name)
+    # 检查JSON文件是否存在
+    if not os.path.exists(json_path):
+        print(f"警告: 文件 {json_path} 不存在.")
+        return
+    print(f'json_path:{json_path}')
+    # data = json.load(open(json_path, 'r', encoding='gb2312',errors='ignore'))
+    data = json.load(open(json_path, 'r', errors='ignore'))
 
     img_w = data['imageWidth']
     img_h = data['imageHeight']
@@ -45,8 +54,8 @@ def decode_json(json_floder_path, json_name):
 
 if __name__ == "__main__":
     # txsp1.json
-    json_floder_path = '../demo1/labels/train/'
+    floder_path_json = '../../demo_guanfang/labels/train/'
     #存放json的文件夹的绝对路径
-    json_names = os.listdir(json_floder_path)
+    json_names = os.listdir(floder_path_json)
     for json_name in json_names:
-        decode_json(json_floder_path, json_name)
+        decode_json(floder_path_json, json_name, '../../demo_guanfang/labels/train/')
